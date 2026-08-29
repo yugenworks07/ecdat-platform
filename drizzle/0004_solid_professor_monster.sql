@@ -1,0 +1,1 @@
+ALTER TABLE `ecdatScans` MODIFY COLUMN `scenario` enum('python-web','java-enterprise','container-mesh','compliance-heavy','repository-static') NOT NULL;

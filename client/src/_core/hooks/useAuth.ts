@@ -1,4 +1,5 @@
 import { startLogin } from "@/const";
+import { isStaticDeployment } from "@/lib/staticDemo";
 import { trpc } from "@/lib/trpc";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
@@ -17,6 +18,7 @@ export function useAuth(options?: UseAuthOptions) {
   const utils = trpc.useUtils();
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
+    enabled: !isStaticDeployment,
     retry: false,
     refetchOnWindowFocus: false,
   });

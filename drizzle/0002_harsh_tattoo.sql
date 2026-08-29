@@ -1,0 +1,2 @@
+ALTER TABLE `ecdatFindings` DROP INDEX `ecdatFindings_findingKey_unique`;--> statement-breakpoint
+ALTER TABLE `ecdatFindings` ADD CONSTRAINT `ecdatFindings_scanKey_findingKey_unique` UNIQUE(`scanKey`,`findingKey`);

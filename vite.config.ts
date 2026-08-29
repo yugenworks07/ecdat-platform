@@ -167,6 +167,14 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(import.meta.dirname, "client/index.html"),
+        lab: path.resolve(import.meta.dirname, "client/lab.html"),
+        remediationQueue: path.resolve(import.meta.dirname, "client/remediation-queue.html"),
+        remediationLab: path.resolve(import.meta.dirname, "client/remediation-lab.html"),
+      },
+    },
   },
   server: {
     host: true,

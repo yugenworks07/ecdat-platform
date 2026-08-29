@@ -1,0 +1,49 @@
+import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { trpc } from "@/lib/trpc";
+import RemediationLab from "@/pages/RemediationLab";
+import { COOKIE_NAME } from "@shared/const";
+import superjson from "superjson";
+import "./index.css";
+
+const queryClient = new QueryClient();
+const trpcClient = trpc.createClient({
+  links: [httpBatchLink({
+    url: "/api/trpc",
+    transformer: superjson,
+    headers() {
+      try {
+        const raw = sessionStorage.getItem("manus-cookie");
+        const prefix = `${COOKIE_NAME}=`;
+        const pair = raw?.split(";").find((item) => item.trim().startsWith(prefix));
+        const token = pair?.trim().slice(prefix.length);
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      } catch {
+        return {};
+      }
+    },
+    fetch(input, init) {
+      return globalThis.fetch(input, { ...(init ?? {}), credentials: "include" });
+    },
+  })],
+});
+
+function StandaloneRemediationLab() {
+  const parameters = new URLSearchParams(window.location.search);
+  const scanId = parameters.get("scanId") ?? "scan-104";
+  const findingId = parameters.get("findingId") ?? "finding-rsa-017";
+  const closeLab = () => {
+    window.close();
+    window.setTimeout(() => {
+      if (!window.closed) window.location.href = `/remediation-queue/${encodeURIComponent(scanId)}`;
+    }, 120);
+  };
+
+  return <trpc.Provider client={trpcClient} queryClient={queryClient}><QueryClientProvider client={queryClient}><ThemeProvider defaultTheme="dark"><TooltipProvider><Toaster /><main className="min-h-screen bg-[#060606] px-4 py-5 text-slate-100 md:px-7 md:py-8"><RemediationLab standalone initialRoute={{ scanId, findingId }} onExit={closeLab} /></main></TooltipProvider></ThemeProvider></QueryClientProvider></trpc.Provider>;
+}
+
+createRoot(document.getElementById("remediation-lab-root")!).render(<StandaloneRemediationLab />);

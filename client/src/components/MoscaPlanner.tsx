@@ -1,0 +1,26 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { startLogin } from "@/const";
+import { trpc } from "@/lib/trpc";
+import { CalendarClock, LockKeyhole, SlidersHorizontal } from "lucide-react";
+
+export function MoscaPlanner() {
+  const { isAuthenticated } = useAuth();
+  const scans = trpc.ecdat.scans.useQuery(undefined, { enabled: isAuthenticated });
+  const scanKey = scans.data?.[0]?.scanKey;
+  const detail = trpc.ecdat.detail.useQuery({ scanKey: scanKey ?? "pending" }, { enabled: Boolean(scanKey) });
+  const [dataLifetimeYears, setDataLifetimeYears] = useState(15);
+  const [migrationMonths, setMigrationMonths] = useState(18);
+  const [crqcHorizonYears, setCrqcHorizonYears] = useState(9);
+  useEffect(() => { const assumptions = detail.data?.assumptions; if (!assumptions) return; const get = (key: string) => Number(assumptions.find(item => item.assumptionKey === key)?.value); setDataLifetimeYears(get("data-lifetime") || 15); setMigrationMonths(get("migration-time") || 18); setCrqcHorizonYears(get("crqc-horizon") || 9); }, [detail.data?.assumptions]);
+  const save = trpc.ecdat.saveMoscaAssumptions.useMutation({ onSuccess: () => { void detail.refetch(); } });
+  const margin = dataLifetimeYears + migrationMonths / 12 - crqcHorizonYears;
+  const currentYear = new Date().getFullYear();
+  const horizon = Math.max(dataLifetimeYears, crqcHorizonYears, Math.ceil(migrationMonths / 12), 1);
+  const timeline = [{ label: "Migration target", year: currentYear + Math.ceil(migrationMonths / 12), tone: "bg-cyan-200" }, { label: "CRQC planning horizon", year: currentYear + crqcHorizonYears, tone: "bg-amber-200" }, { label: "Data lifetime end", year: currentYear + dataLifetimeYears, tone: "bg-emerald-300" }];
+  return <section className="rounded-3xl border border-cyan-200/12 bg-[linear-gradient(120deg,rgba(34,211,238,.08),rgba(9,20,35,.9)_44%)] p-5 md:p-6"><div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between"><div><p className="flex items-center gap-2 text-xs font-medium text-cyan-100"><SlidersHorizontal className="h-4 w-4" />Mosca-style planning controls</p><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">Set representative planning assumptions. The timeline is a planning aid based on your inputs; it is not a forecast of cryptanalytic capability or delivery certainty.</p></div><Badge variant="outline" className={`w-fit border-cyan-200/20 ${margin >= 0 ? "bg-amber-200/[0.08] text-amber-100" : "bg-emerald-300/[0.08] text-emerald-100"}`}>Planning margin: {margin.toFixed(1)} years</Badge></div><div className="mt-5 grid gap-3 md:grid-cols-3"><PlannerInput label="Data lifetime" value={dataLifetimeYears} suffix="years" onChange={setDataLifetimeYears} /><PlannerInput label="Migration time" value={migrationMonths} suffix="months" onChange={setMigrationMonths} /><PlannerInput label="CRQC planning horizon" value={crqcHorizonYears} suffix="years" onChange={setCrqcHorizonYears} /></div><div className="mt-6 rounded-2xl border border-white/8 bg-[#06101c]/70 p-4"><p className="flex items-center gap-2 text-xs font-medium text-slate-100"><CalendarClock className="h-4 w-4 text-cyan-100" />Planning timeline from {currentYear}</p><div className="relative mt-6 h-14 border-t border-white/10">{timeline.map(point => <div key={point.label} className="absolute top-0 flex -translate-x-1/2 flex-col items-center" style={{ left: `${Math.min(96, Math.max(5, ((point.year - currentYear) / horizon) * 100))}%` }}><span className={`-mt-1.5 h-3 w-3 rounded-full ring-4 ring-[#06101c] ${point.tone}`} /><span className="mt-2 max-w-24 text-center text-[10px] leading-4 text-slate-400">{point.label}<br /><strong className="text-slate-200">{point.year}</strong></span></div>)}</div></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-slate-500">{scanKey ? "These inputs apply to your most recent saved scenario run." : "Save a demo scan to persist and recalculate scenario assumptions."}</p>{!isAuthenticated ? <Button onClick={() => startLogin()} className="bg-cyan-200 text-[#072033] hover:bg-cyan-100"><LockKeyhole className="h-4 w-4" />Sign in to save inputs</Button> : <Button disabled={!scanKey || save.isPending} onClick={() => scanKey && save.mutate({ scanKey, dataLifetimeYears, migrationMonths, crqcHorizonYears })} className="bg-cyan-200 text-[#072033] hover:bg-cyan-100">{save.isPending ? "Recalculating…" : "Save and recalculate"}</Button>}</div></section>;
+}
+function PlannerInput({ label, value, suffix, onChange }: { label: string; value: number; suffix: string; onChange: (value: number) => void }) { return <label className="rounded-xl border border-white/8 bg-[#06101c]/65 p-3"><span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-600">{label}</span><div className="mt-2 flex items-center gap-2"><Input type="number" min={1} value={value} onChange={event => onChange(Math.max(1, Number(event.target.value) || 1))} className="h-8 border-0 bg-transparent px-0 font-display text-lg text-white focus-visible:ring-0" /><span className="text-xs text-slate-500">{suffix}</span></div></label>; }

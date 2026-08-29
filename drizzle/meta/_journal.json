@@ -1,5 +1,41 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1787513617041,
+      "tag": "0000_supreme_argent",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1787513784282,
+      "tag": "0001_awesome_adam_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1787589799406,
+      "tag": "0002_harsh_tattoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787749411224,
+      "tag": "0003_outgoing_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787751745841,
+      "tag": "0004_solid_professor_monster",
+      "breakpoints": true
+    }
+  ]
 }
