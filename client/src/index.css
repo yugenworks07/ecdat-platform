@@ -9,8 +9,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: no-preference) { button,a { transition: transform 160ms cubic-bezier(.23,1,.32,1),background-color 160ms cubic-bezier(.23,1,.32,1),border-color 160ms cubic-bezier(.23,1,.32,1),color 160ms cubic-bezier(.23,1,.32,1); } button:active { transform: scale(.97); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 
-html:not(.dark) { background: #f0f2f5; }
-html:not(.dark) body { background: #f0f2f5; color: #65676b; }
+
 html:not(.dark) [class*="bg-[#06101c]"], html:not(.dark) [class*="bg-[#08111f]"], html:not(.dark) [class*="bg-[#091423]"], html:not(.dark) [class*="bg-[#0a1727]"] { background-color: #ffffff !important; }
 html:not(.dark) [class*="bg-[#06101c]/"], html:not(.dark) [class*="bg-white/[0.025]"] { background-color: rgba(237, 245, 255, .82) !important; }
 html:not(.dark) [class*="border-white/"] { border-color: rgba(0, 0, 0, .14) !important; }
@@ -70,11 +69,26 @@ html:not(.dark) .spatial-node-label strong, html:not(.dark) .spatial-fallback-no
   --obs-violet: #df3003;
   --obs-amber: #fdc448;
 }
+html:not(.dark) {
+  --obs-ink: #f8f9fb;
+  --obs-panel: #ffffff;
+  --obs-panel-raised: #f0f2f5;
+  --obs-line: rgba(0,0,0,.12);
+  --obs-signal: #df3003;
+  --obs-violet: #df3003;
+  --obs-amber: #d4940a;
+}
 
 body:has([data-sidebar="sidebar"]) {
   background:
     radial-gradient(ellipse 58% 34% at 73% -12%, rgba(252, 76, 31, .12), transparent 72%),
     radial-gradient(circle at 88% 80%, rgba(253, 196, 72, .045), transparent 30%),
+    var(--obs-ink);
+}
+html:not(.dark) body:has([data-sidebar="sidebar"]) {
+  background:
+    radial-gradient(ellipse 58% 34% at 73% -12%, rgba(252, 76, 31, .08), transparent 72%),
+    radial-gradient(circle at 88% 80%, rgba(253, 196, 72, .03), transparent 30%),
     var(--obs-ink);
 }
 
@@ -207,6 +221,12 @@ main .font-display.text-4xl {
     radial-gradient(circle at 8% 78%, rgba(253, 196, 72, .06), transparent 32%),
     var(--obs-ink);
 }
+html:not(.dark) #lab-root {
+  background:
+    radial-gradient(ellipse 58% 38% at 82% -10%, rgba(252, 76, 31, .08), transparent 72%),
+    radial-gradient(circle at 8% 78%, rgba(253, 196, 72, .03), transparent 32%),
+    var(--obs-ink);
+}
 
 #lab-root main::before { inset: 0; opacity: .35; }
 #lab-root main::after { right: 16%; width: min(72vw, 920px); }
@@ -216,6 +236,12 @@ main .font-display.text-4xl {
   border-color: #ffffff14 !important;
   background-image: linear-gradient(145deg, rgba(27, 27, 28, .98), rgba(20, 20, 20, .99)) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 42px rgba(0,0,0,.22);
+}
+html:not(.dark) #lab-root section.rounded-3xl,
+html:not(.dark) #lab-root article.rounded-3xl {
+  border-color: rgba(0,0,0,.12) !important;
+  background-image: linear-gradient(145deg, #ffffff, #f6f6f7) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.07), inset 0 1px 0 #ffffff;
 }
 
 html:not(.dark) body:has([data-sidebar="sidebar"]) { background: #f0f2f5; }
@@ -402,15 +428,20 @@ body:has(.sih-demo-sidebar) {
 .observatory-migration .sih-demo-plan-return { border: 1px solid rgba(252,165,165,.25); background: rgba(244,63,94,.08); color: #fda4af; }
 .observatory-migration .sih-demo-plan-return:hover { border-color: rgba(252,165,165,.55); background: rgba(244,63,94,.16); color: #fecdd3; }
 .sih-demo-notification-row { display: flex; width: 100%; gap: 11px; border: 1px solid rgba(255,255,255,.10); border-radius: 7px; background: rgba(255,255,255,.025); padding: 12px; text-align: left; }
+html:not(.dark) .sih-demo-notification-row { border-color: rgba(0,0,0,.12); background: #ffffff; }
 .sih-demo-notification-row:hover { border-color: rgba(253,196,72,.40); background: rgba(253,196,72,.05); }
+html:not(.dark) .sih-demo-notification-row:hover { border-color: rgba(223,48,3,.3); background: rgba(252,76,31,.04); }
 .sih-demo-boot { background: radial-gradient(circle at 50% 35%, rgba(252,76,31,.18), transparent 35%), #060606; }
 .sih-demo-boot-mark { width: 64px; height: 64px; border-radius: 10px; }
 .sih-demo-boot-line { display: block; width: 156px; height: 3px; margin-top: 22px; overflow: hidden; background: rgba(255,255,255,.10); }
 .sih-demo-boot-line span { display: block; width: 64%; height: 100%; background: linear-gradient(90deg, #ff0003, #fc4c1f, #fdc448); }
 
 #lab-root { background: radial-gradient(ellipse 58% 38% at 78% -10%, rgba(252,76,31,.18), transparent 70%), linear-gradient(120deg, rgba(255,0,3,.06), transparent 30%), #060606; }
+html:not(.dark) #lab-root { background: radial-gradient(ellipse 58% 38% at 78% -10%, rgba(252,76,31,.08), transparent 70%), linear-gradient(120deg, rgba(255,0,3,.04), transparent 30%), #f8f9fb; }
 #lab-root main::before { background-image: linear-gradient(rgba(253,196,72,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(253,196,72,.025) 1px, transparent 1px); background-size: 36px 36px; }
+html:not(.dark) #lab-root main::before { background-image: linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px); background-size: 36px 36px; }
 #lab-root section.rounded-3xl, #lab-root article.rounded-3xl { border-color: rgba(253,196,72,.30) !important; border-radius: 10px !important; background-image: linear-gradient(135deg, #1b1b1c, #15110f) !important; }
+html:not(.dark) #lab-root section.rounded-3xl, html:not(.dark) #lab-root article.rounded-3xl { border-color: rgba(0,0,0,.12) !important; border-radius: 10px !important; background-image: linear-gradient(135deg, #ffffff, #f6f6f7) !important; }
 
 .scan-submit-button { border: 1px solid #ffb046 !important; background: linear-gradient(135deg, #ff8f3c, #ff4d00 58%, #df3003) !important; color: #fff !important; box-shadow: 0 0 0 1px rgba(255,143,60,.16), 0 10px 26px rgba(255,77,0,.32), inset 0 1px 0 rgba(255,255,255,.34); }
 .scan-submit-button:hover:not(:disabled) { border-color: #fff1cc !important; background: linear-gradient(135deg, #ffb046, #ff6200 58%, #fc4c1f) !important; box-shadow: 0 0 0 3px rgba(255,143,60,.12), 0 12px 32px rgba(255,77,0,.44), inset 0 1px 0 rgba(255,255,255,.42); }
