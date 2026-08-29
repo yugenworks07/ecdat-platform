@@ -13,5 +13,3 @@ The managed full-stack preview was verified on 2026-08-28 after the final migrat
 | `/remediation-queue` Remediation Queue | Rendered scan `SCAN-104` with severity filters, three prioritised findings, Mosca signals, affected relationship counts, and Open Lab actions. |
 
 The final reload of `/inventory` reported no browser-console output after removing the invalid whitespace text node inside its table row. The current post-restart dev-server log check reported no new module, hydration, unhandled, or failed-network errors. The earlier `fflate` module message was stale and occurred before dependencies were installed and the server was restarted.
-
-Deployment verification: repository commit 1ed6b055 imported; TypeScript check, 36 test files (107 tests), production build, and preview route checks passed on 2026-08-29.
